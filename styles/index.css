@@ -3,11 +3,12 @@
    ======================================== */
 
 :root {
-    --bg-color: #0d0d0d;
-    --text-primary: #fafafa;
-    --text-secondary: #808080;
-    --accent: #10b981;
-    --hover-color: #1a1a1a;
+    --bg-color: #0f1115;        /* Noir avec une infime touche de bleu nuit */
+    --text-primary: #fafafa;    /* Blanc cassé (le max de luminosité conseillé) */
+    --text-secondary: #727272;
+    --text-third: #5c6bc0;  /* Gris-Bleu industriel (change du gris triste) */
+    --accent: #f4ea0c;          /* Jaune fluo sécurité */
+    --hover-color: #161b22;     /* Sombre et profond */
 }
 
 /* ========================================
@@ -31,25 +32,36 @@ body {
     line-height: 1.6;
 }
 
+
+
 /* ========================================
    TYPOGRAPHIE
    ======================================== */
 
-h1, h2, h3, h4 {
-    color: var(--text-primary);
-}
+
 
 h1 {
+    color: var(--accent);
     font-size: 3rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
 }
 
 h2 {
+    color: var(--text-primary);
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 1rem;
 }
+
+h3{
+    color: var(--accent);
+}
+
+h4{
+    color: var(--text-primary);
+}
+
 
 .tagline {
     max-width: 300px;
@@ -176,9 +188,9 @@ h2 {
 }
 
 .social-icon {
-    width: 24px;
-    height: 24px;
-    opacity: 0.5;
+    width: 30px;
+    height: 30px;
+    opacity: 0.3;
     transition: all 0.2s;
 }
 
@@ -192,17 +204,24 @@ h2 {
    ======================================== */
 
 .project-card {
-    background: #151515;
-    padding: 24px;
+    background: transparent;
+    border: none;
+    border-left: 4px solid transparent; 
+    padding: 20px;
+    margin-top : 20px;
+    margin-bottom: 20px;
     border-radius: 8px;
-    margin-top: 20px;
-    border: 1px solid #222;
-    transition: transform 0.2s, border-color 0.2s;
+    transition: all 0.3s ease;
 }
 
 .project-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-3px);
+    transform: translateX(10px);
+    background: rgba(255, 255, 255, 0.05);
+    border-left-color: var(--accent);
+    
+    border-top-color: rgba(255, 255, 255, 0.1);
+    border-right-color: rgba(255, 255, 255, 0.1);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
 .project-card h4 {
@@ -232,6 +251,10 @@ h2 {
 /* ========================================
    FORMULAIRE DE CONTACT
    ======================================== */
+
+#contact p{
+    color: var(--text-primary);
+}
 
 .contact-form {
     max-width: 500px;
@@ -308,7 +331,7 @@ h2 {
 }
 
 .submit-btn:hover {
-    background-color: rgba(16, 185, 129, 0.1);
+    background-color: rgba(244, 234, 12, 0.1);
     transform: translateX(5px);
 }
 
