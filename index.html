@@ -131,9 +131,13 @@
                     Un projet, une collaboration ou une question ? Le formulaire est à vous.
                 </p>
 
-                <form action="https://formspree.io/f/xnneyzlr" method="POST" class="contact-form">
+                <form action="https://api.web3forms.com/submit" method="POST" class="contact-form">
 
-                    <input type="hidden" name="_next" value="merci.html">
+                    <input type="hidden" name="access_key" value="ea0c9f13-a59b-48be-8198-2bf853face68">
+
+                    <input type="hidden" name="redirect" value="https://ellandeee.github.io/portfolio/merci.html">
+
+                    <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
 
                     <div class="form-group">
                         <input type="text" id="name" name="name" required placeholder=" ">
