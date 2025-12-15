@@ -1,0 +1,353 @@
+/* ========================================
+   VARIABLES & CONFIGURATION
+   ======================================== */
+
+:root {
+    --bg-color: #0d0d0d;
+    --text-primary: #fafafa;
+    --text-secondary: #808080;
+    --accent: #10b981;
+    --hover-color: #1a1a1a;
+}
+
+/* ========================================
+   RESET & BASE
+   ======================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-secondary);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+}
+
+/* ========================================
+   TYPOGRAPHIE
+   ======================================== */
+
+h1, h2, h3, h4 {
+    color: var(--text-primary);
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.tagline {
+    max-width: 300px;
+    margin-bottom: 4rem;
+    line-height: 1.5;
+}
+
+.highlight {
+    color: var(--text-primary);
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.highlight:hover {
+    color: var(--accent);
+}
+
+/* ========================================
+   LAYOUT PRINCIPAL
+   ======================================== */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    min-height: 100vh;
+    display: flex;
+    gap: 4rem;
+}
+
+/* Header sticky (colonne gauche) */
+.header {
+    width: 40%;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Contenu scrollable (colonne droite) */
+.content {
+    width: 60%;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+}
+
+.section {
+    margin-bottom: 6rem;
+    min-height: 50vh;
+    padding-top: 2rem;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.section p {
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+/* ========================================
+   NAVIGATION
+   ======================================== */
+
+.nav ul {
+    list-style: none;
+}
+
+.nav li {
+    margin-bottom: 1rem;
+}
+
+.nav a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    padding: 5px 0;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: color 0.3s;
+}
+
+.nav a:hover,
+.nav a.active {
+    color: var(--text-primary);
+}
+
+/* Indicateur animé (pilule qui s'étend) */
+.nav-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 4px;
+    background-color: #666;
+    margin-right: 1rem;
+    transition: width 0.3s, background-color 0.3s;
+}
+
+.nav a:hover .nav-indicator,
+.nav a.active .nav-indicator {
+    width: 50px;
+    background-color: var(--accent);
+}
+
+/* ========================================
+   RÉSEAUX SOCIAUX
+   ======================================== */
+
+.social-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.social-icon {
+    width: 24px;
+    height: 24px;
+    opacity: 0.5;
+    transition: all 0.2s;
+}
+
+.social-links a:hover .social-icon {
+    opacity: 1;
+    transform: translateY(-3px);
+}
+
+/* ========================================
+   PROJETS
+   ======================================== */
+
+.project-card {
+    background: #151515;
+    padding: 24px;
+    border-radius: 8px;
+    margin-top: 20px;
+    border: 1px solid #222;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.project-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+}
+
+.project-card h4 {
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.tags {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tag {
+    background: var(--hover-color);
+    color: var(--text-primary);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    border: 1px solid #333;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 500;
+}
+
+/* ========================================
+   FORMULAIRE DE CONTACT
+   ======================================== */
+
+.contact-form {
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.form-group {
+    position: relative;
+    margin-top: 1rem;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #333;
+    color: var(--text-primary);
+    font-size: 1rem;
+    padding: 10px 0;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.3s;
+    resize: vertical;
+}
+
+.form-group label {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    color: var(--text-secondary);
+    pointer-events: none;
+    transition: all 0.3s;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Animation label flottant */
+.form-group input:focus ~ label,
+.form-group input:not(:placeholder-shown) ~ label,
+.form-group textarea:focus ~ label,
+.form-group textarea:not(:placeholder-shown) ~ label {
+    top: -20px;
+    font-size: 0.9rem;
+    color: var(--accent);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-bottom-color: var(--accent);
+}
+
+/* Bouton d'envoi */
+.submit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background-color: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-family: 'Rajdhani', sans-serif;
+    cursor: pointer;
+    border-radius: 4px;
+    width: fit-content;
+    transition: all 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: rgba(16, 185, 129, 0.1);
+    transform: translateX(5px);
+}
+
+.submit-btn:hover svg {
+    transform: translateX(5px);
+}
+
+.submit-btn svg {
+    transition: transform 0.3s;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 1024px) {
+    .container {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .header {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding-top: 4rem;
+        padding-bottom: 2rem;
+    }
+
+    .content {
+        width: 100%;
+        padding-top: 0;
+    }
+    
+    .tagline {
+        max-width: 100%;
+    }
+    
+    .section {
+        min-height: auto;
+    }
+}

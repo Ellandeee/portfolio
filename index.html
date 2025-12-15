@@ -1,12 +1,192 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ellande Cros - Accueil</title>
+    <title>Ellande Cros - Portfolio</title>
+    <link rel="stylesheet" href="styles/index.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Rajdhani:wght@400;600;700&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
-    <h1>C'est l'accueil</h1>
-    <p>Ceci est une page HTML accueil lalalalala.</p>
+    <div class="container">
+        <header class="header">
+            <div>
+                <h1>Ellande Cros</h1>
+                <h2>Développeur Gameplay</h2>
+                <p class="tagline">Je crée des expériences immersives et des mécaniques de jeu solides.</p>
+
+                <nav class="nav">
+                    <ul>
+                        <li>
+                            <a href="#about" class="active">
+                                <span class="nav-indicator"></span>
+                                <span>À propos</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#projets">
+                                <span class="nav-indicator"></span>
+                                <span>Projets</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#contact">
+                                <span class="nav-indicator"></span>
+                                <span>Contact</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <ul class="social-links">
+                <li>
+                    <a href="https://github.com/Ellandeee" target="_blank" aria-label="Github">
+                        <img src="images/github.svg" alt="Github" class="social-icon">
+                    </a>
+                </li>
+                <li>
+                    <a href="https://linkedin.com/in/ellande-cros-868b0b39b" target="_blank" aria-label="Linkedin">
+                        <img src="images/linkedin.svg" alt="Linkedin" class="social-icon">
+                    </a>
+                </li>
+            </ul>
+        </header>
+
+        <main class="content">
+            <section id="about" class="section">
+                <h3 class="section-title">À PROPOS</h3>
+
+                <p>
+                    Je suis un <span class="highlight">Gameplay Programmer</span> passionné par la création de
+                    mécaniques de jeu fluides et réactives.
+                    Mon objectif est de transformer des idées complexes en expériences joueurs intuitives, en optimisant
+                    toujours
+                    la <span class="highlight">performance</span> et la maintenabilité du code.
+                </p>
+
+                <p>
+                    Fort d'une expertise sur <span class="highlight">Unity (C#)</span> et explorant les possibilités
+                    d'<span class="highlight">Unreal Engine 5 (C++)</span>, j'aime toucher à tout : de l'intelligence
+                    artificielle
+                    aux shaders, en passant par l'architecture moteur.
+                </p>
+
+                <p>
+                    Curieux et rigoureux, je suis toujours à l'affût des dernières technologies pour repousser les
+                    limites
+                    du <span class="highlight">Game Design</span> technique.
+                </p>
+            </section>
+
+            <section id="projets" class="section">
+                <h3 class="section-title">PROJETS</h3>
+
+                <div class="project-card">
+                    <h4>PROJECT: ECHOES</h4>
+                    <p>
+                        Un Action-RPG en 3D isométrique axé sur des combats rapides.
+                        Développement du système de combo, de la machine à états du joueur et de l'IA des ennemis.
+                    </p>
+                    <div class="tags">
+                        <span class="tag">Unity</span>
+                        <span class="tag">C#</span>
+                        <span class="tag">HLSL</span>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <h4>NEON RACER</h4>
+                    <p>
+                        Prototype de jeu de course arcade. Implémentation d'une physique de véhicule personnalisée
+                        (raycasts de suspension, friction des pneus) pour un ressenti "Drift" précis.
+                    </p>
+                    <div class="tags">
+                        <span class="tag">Unreal Engine 5</span>
+                        <span class="tag">C++</span>
+                        <span class="tag">Blueprints</span>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <h4>DUNGEON GEN</h4>
+                    <p>
+                        Outil de génération procédurale de niveaux utilisant l'algorithme "Wave Function Collapse".
+                        Permet de créer des donjons infinis et cohérents en un clic.
+                    </p>
+                    <div class="tags">
+                        <span class="tag">C#</span>
+                        <span class="tag">Algorithmique</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contact" class="section">
+                <h3 class="section-title">ME CONTACTER</h3>
+                <p style="margin-bottom: 2rem;">
+                    Un projet, une collaboration ou une question ? Le formulaire est à vous.
+                </p>
+
+                <form action="https://formspree.io/f/xnneyzlr" method="POST" class="contact-form">
+
+                    <input type="hidden" name="_next" value="merci.html">
+
+                    <div class="form-group">
+                        <input type="text" id="name" name="name" required placeholder=" ">
+                        <label for="name">Votre Nom</label>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" required placeholder=" ">
+                        <label for="email">Votre Email</label>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea id="message" name="message" rows="5" required placeholder=" "></textarea>
+                        <label for="message">Votre Message</label>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        ENVOYER LE MESSAGE
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Navigation active au scroll
+        const sections = document.querySelectorAll('.section');
+        const navLinks = document.querySelectorAll('.nav a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
 </body>
+
 </html>
