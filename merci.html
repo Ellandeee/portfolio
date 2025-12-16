@@ -11,6 +11,9 @@
 </head>
 <body>
 
+    <!-- CURSEUR CUSTOM -->
+    <div id="custom-cursor"></div>
+
     <div class="merci-box">
         <h1>MESSAGE ENVOYÉ</h1>
         <p>Merci de m'avoir contacté. Je vous répondrai dans les plus brefs délais.</p>
@@ -23,6 +26,42 @@
             </svg>
         </a>
     </div>
+
+
+    <!-- "GPS" DE LA LAMPE TORCHE -->
+    <script>
+        const body = document.body;
+            document.addEventListener('mousemove', (e) => {
+                // On met à jour les variables CSS avec la position X et Y de la souris
+                body.style.setProperty('--mouse-x', e.clientX + 'px');
+                body.style.setProperty('--mouse-y', e.clientY + 'px');
+            });
+    </script>
+
+
+    <!-- CURSEUR CUSTOM -->
+    <script>
+        const cursor = document.getElementById('custom-cursor');
+
+        // 1. Mouvement instantané
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // 2. Clic (Rapetissement)
+        document.addEventListener('mousedown', () => cursor.classList.add('clicking'));
+        document.addEventListener('mouseup', () => cursor.classList.remove('clicking'));
+
+        // 3. Hover (Rotation + Agrandissement)
+        // S'applique aux liens, boutons, cards, inputs et textareas
+        const clickables = document.querySelectorAll('a, button, .project-card, input, textarea');
+
+        clickables.forEach((el) => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+    </script>
 
 </body>
 </html>
