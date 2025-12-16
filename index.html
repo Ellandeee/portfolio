@@ -12,13 +12,23 @@
 </head>
 
 <body>
+    
+    <!-- CURSEUR CUSTOM -->
+    <div id="custom-cursor"></div>
+
+
     <div class="container">
+
+        <!-- HEADER A GAUCHE -->
         <header class="header">
             <div>
+
+                <!-- TITRE ET TEXTES EN DESSOUS -->
                 <h1>Ellande Cros</h1>
                 <h2>Développeur Jeux Vidéos</h2>
                 <p class="tagline">Je crée des jeux vidéos super géniaux wow faut que je remplisse.</p>
 
+                <!-- MENU NAV -->
                 <nav class="nav">
                     <ul>
                         <li>
@@ -41,8 +51,11 @@
                         </li>
                     </ul>
                 </nav>
+
+
             </div>
 
+            <!-- RESEAUX -->
             <ul class="social-links">
                 <li>
                     <a href="https://github.com/Ellandeee" target="_blank" aria-label="Github">
@@ -57,7 +70,11 @@
             </ul>
         </header>
 
+
+        <!-- CONTENU A DROITE -->
         <main class="content">
+
+            <!-- SECTION A PROPOS -->
             <section id="about" class="section">
                 <h3 class="section-title">À PROPOS</h3>
 
@@ -83,53 +100,77 @@
                 </p>
             </section>
 
+            <!-- SECTION PROJETS -->
             <section id="projets" class="section">
                 <h3 class="section-title">PROJETS</h3>
 
+                <!-- PROJET 1 -->
                 <div class="project-card">
-                    <h4>PROJET 1</h4>
-                    <p>
-                        lalala
-                        lulululululu
-                    </p>
-                    <div class="tags">
-                        <span class="tag">Unity</span>
-                        <span class="tag">C#</span>
-                        <span class="tag">Figma</span>
+                    <div class="project-info">
+                        <h4>PROJET 1</h4>
+                        <p>
+                            lalala lulululululu description incroyable.
+                        </p>
+                        <div class="tags">
+                            <span class="tag">Unity</span>
+                            <span class="tag">C#</span>
+                            <span class="tag">Figma</span>
+                        </div>
+                    </div>
+
+                    <div class="project-img">
+                        <img src="images/projet_1.webp" alt="Aperçu du projet">
                     </div>
                 </div>
 
+                <!-- PROJET 2 -->
                 <div class="project-card">
-                    <h4>PROJET 2</h4>
-                    <p>
-                        lalala
-                        lulululululu
-                    </p>
-                    <div class="tags">
-                        <span class="tag">Unreal Engine 5</span>
-                        <span class="tag">C++</span>
+                    <div class="project-info">
+                        <h4>PROJET 2</h4>
+                        <p>
+                            lalala lulululululu description incroyable.
+                        </p>
+                        <div class="tags">
+                            <span class="tag">Unity</span>
+                            <span class="tag">C#</span>
+                            <span class="tag">Figma</span>
+                        </div>
+                    </div>
+
+                    <div class="project-img">
+                        <img src="images/projet_2.webp" alt="Aperçu du projet">
                     </div>
                 </div>
 
+                <!-- PROJET 3 -->
                 <div class="project-card">
-                    <h4>PROJET 3</h4>
-                    <p>
-                        lalala
-                        lulululululu
-                    </p>
-                    <div class="tags">
-                        <span class="tag">Adobe Illustrator</span>
-                        <span class="tag">P5.js</span>
+                    <div class="project-info">
+                        <h4>PROJET 3</h4>
+                        <p>
+                            lalala lulululululu description incroyable.
+                        </p>
+                        <div class="tags">
+                            <span class="tag">Unity</span>
+                            <span class="tag">C#</span>
+                            <span class="tag">Figma</span>
+                        </div>
+                    </div>
+
+                    <div class="project-img">
+                        <img src="images/projet_3.webp" alt="Aperçu du projet">
                     </div>
                 </div>
             </section>
 
+            <!-- SECTION CONTACT -->
             <section id="contact" class="section">
+
                 <h3 class="section-title">ME CONTACTER</h3>
                 <p style="margin-bottom: 2rem;">
                     Un projet, une collaboration ou une question ? N'hésitez pas.
                 </p>
 
+                <!-- FORMULAIRE -->
                 <form action="https://api.web3forms.com/submit" method="POST" class="contact-form">
 
                     <input type="hidden" name="access_key" value="ea0c9f13-a59b-48be-8198-2bf853face68">
@@ -153,6 +194,7 @@
                         <label for="message">Votre Message</label>
                     </div>
 
+                    <!-- BOUTON ENVOYER -->
                     <button type="submit" class="submit-btn">
                         ENVOYER LE MESSAGE
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -161,13 +203,18 @@
                             <polyline points="12 5 19 12 12 19"></polyline>
                         </svg>
                     </button>
+
                 </form>
+
             </section>
+
         </main>
+
     </div>
 
+
+    <!-- SYNCRONISE LE MENU NAV AVEC LE DEFILEMENT DE LA PAGE -->
     <script>
-        // Navigation active au scroll
         const sections = document.querySelectorAll('.section');
         const navLinks = document.querySelectorAll('.nav a');
 
@@ -177,6 +224,7 @@
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
                 const sectionHeight = section.clientHeight;
+                // Si on a scrollé jusqu'à cette section (-200px pour la marge)
                 if (window.scrollY >= (sectionTop - 200)) {
                     current = section.getAttribute('id');
                 }
@@ -190,6 +238,43 @@
             });
         });
     </script>
+
+
+    <!-- "GPS" DE LA LAMPE TORCHE -->
+    <script>
+        const body = document.body;
+            document.addEventListener('mousemove', (e) => {
+                // On met à jour les variables CSS avec la position X et Y de la souris
+                body.style.setProperty('--mouse-x', e.clientX + 'px');
+                body.style.setProperty('--mouse-y', e.clientY + 'px');
+            });
+    </script>
+
+
+    <!-- CURSEUR CUSTOM -->
+    <script>
+        const cursor = document.getElementById('custom-cursor');
+
+        // 1. Mouvement instantané
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // 2. Clic (Rapetissement)
+        document.addEventListener('mousedown', () => cursor.classList.add('clicking'));
+        document.addEventListener('mouseup', () => cursor.classList.remove('clicking'));
+
+        // 3. Hover (Rotation + Agrandissement)
+        // S'applique aux liens, boutons, cards, inputs et textareas
+        const clickables = document.querySelectorAll('a, button, .project-card, input, textarea');
+
+        clickables.forEach((el) => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+    </script>
+
 </body>
 
 </html>

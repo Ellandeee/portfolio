@@ -1,5 +1,5 @@
 /* ========================================
-   VARIABLES & CONFIGURATION
+   VARIABLES
    ======================================== */
 
 :root {
@@ -12,7 +12,7 @@
 }
 
 /* ========================================
-   RESET & BASE
+   BASE
    ======================================== */
 
 * {
@@ -33,9 +33,65 @@ body {
 }
 
 
+/* ========================================
+   CURSEUR PERSONNALISÉ
+   ======================================== */
+
+
+/* Cache le curseur de base */
+html, body, a, button, input, textarea {
+    cursor: none !important;
+}
+
+/* Halo de lumière autour du curseur */
+body{
+    min-height: 100vh;
+    margin: 0;
+    background-attachment: fixed;
+    background-image: radial-gradient(
+        400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+        rgba(244, 234, 12, 0.025),
+        transparent 100%
+    );
+}
+
+/* Style nouveau curseur */
+#custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    
+    border: 2px solid rgba(244, 234, 12, 0.35);
+    background-color: transparent;
+    border-radius: 7px;
+    
+    transform: translate(-50%, -50%);
+    pointer-events: none; 
+    z-index: 10000;
+
+    transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+/* Survole un lien ou un bouton */
+#custom-cursor.hovered {
+    width: 27px;
+    height: 27px;
+    background-color: rgba(244, 234, 12, 0.15);
+    border-color: transparent;
+    transform: translate(-50%, -50%) rotate(45deg);
+    
+}
+
+/* Clic */
+#custom-cursor.clicking {
+    transform: translate(-50%, -50%) scale(0.75);
+}
+
 
 /* ========================================
-   TYPOGRAPHIE
+   TITRES ET PETIT TRUCS
    ======================================== */
 
 
@@ -79,6 +135,8 @@ h4{
     color: var(--accent);
 }
 
+
+
 /* ========================================
    LAYOUT PRINCIPAL
    ======================================== */
@@ -92,7 +150,7 @@ h4{
     gap: 4rem;
 }
 
-/* Header sticky (colonne gauche) */
+/* Header sticky à gauche */
 .header {
     width: 40%;
     position: sticky;
@@ -105,7 +163,7 @@ h4{
     justify-content: space-between;
 }
 
-/* Contenu scrollable (colonne droite) */
+/* Contenu à droite */
 .content {
     width: 60%;
     padding-top: 6rem;
@@ -130,7 +188,7 @@ h4{
 }
 
 /* ========================================
-   NAVIGATION
+   MENU NAV
    ======================================== */
 
 .nav ul {
@@ -160,7 +218,6 @@ h4{
     color: var(--text-primary);
 }
 
-/* Indicateur animé (pilule qui s'étend) */
 .nav-indicator {
     display: inline-block;
     width: 10px;
@@ -178,7 +235,7 @@ h4{
 }
 
 /* ========================================
-   RÉSEAUX SOCIAUX
+   RÉSEAUX
    ======================================== */
 
 .social-links {
@@ -212,16 +269,16 @@ h4{
     margin-bottom: 20px;
     border-radius: 8px;
     transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
 }
 
 .project-card:hover {
     transform: translateX(10px);
     background: rgba(255, 255, 255, 0.05);
     border-left-color: var(--accent);
-    
-    border-top-color: rgba(255, 255, 255, 0.1);
-    border-right-color: rgba(255, 255, 255, 0.1);
-    border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
 .project-card h4 {
@@ -246,6 +303,21 @@ h4{
     border: 1px solid #333;
     font-family: 'Rajdhani', sans-serif;
     font-weight: 500;
+}
+
+.project-img {
+    flex-shrink: 0; /* Empêche l'image de s'écraser si le texte est long */
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.project-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* ========================================
@@ -311,7 +383,6 @@ h4{
     border-bottom-color: var(--accent);
 }
 
-/* Bouton d'envoi */
 .submit-btn {
     display: inline-flex;
     align-items: center;
