@@ -34,6 +34,63 @@ body {
 
 
 /* ========================================
+   FORMES FOND
+   ======================================== */
+
+
+@keyframes idleFloat {
+    0% { transform: translateY(0px) rotate(var(--base-rotation)); }
+    33% { transform: translateY(-30px) rotate(calc(var(--base-rotation) + 50deg)); }
+    66% { transform: translateY(30px) rotate(calc(var(--base-rotation) - 50deg)); }
+    100% { transform: translateY(0px) rotate(var(--base-rotation)); }
+}
+
+#ambient-3d-scene {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2; /* Derrière tout */
+    pointer-events: none;
+    overflow: hidden;
+    background: transparent;
+}
+
+.floating-mesh {
+    position: absolute;
+    border: 1px solid var(--accent);
+    opacity: 0.1;
+    transition: opacity 0.3s;
+    translate: -50% -50%; 
+    pointer-events: none;
+    will-change: transform, translate;
+    animation: idleFloat 6s ease-in-out infinite;
+}
+
+/* Triangles */
+.shape-triangle {
+    width: 0; height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 25px solid var(--accent);
+    background: transparent !important;
+    border-top: none; border-right-color: transparent; border-left-color: transparent;
+}
+
+
+/* Caractères {, [, < ... */
+.char-item {
+    border: none !important;
+    color: var(--accent);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.75rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+
+/* ========================================
    CURSEUR PERSONNALISÉ
    ======================================== */
 
@@ -50,7 +107,7 @@ body{
     background-attachment: fixed;
     background-image: radial-gradient(
         400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
-        rgba(244, 234, 12, 0.025),
+        rgba(244, 234, 12, 0.075),
         transparent 100%
     );
 }
@@ -78,7 +135,7 @@ body{
 #custom-cursor.hovered {
     width: 27px;
     height: 27px;
-    background-color: rgba(244, 234, 12, 0.15);
+    background-color: rgba(244, 234, 12, 0.22);
     border-color: transparent;
     transform: translate(-50%, -50%) rotate(45deg);
     
@@ -90,10 +147,52 @@ body{
 }
 
 
+
+/* ========================================
+   BARRE DE PROGESSION
+   ======================================== */
+
+
+/* Le "Rail" (Le fond gris fixe à gauche) */
+.progress-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 5px;       /* Largeur de la jauge */
+    height: 100%;     /* Prend toute la hauteur de l'écran */
+    background: #0e0d0d; /* Gris très sombre (le fond du rail) */
+    z-index: 99999;   /* Toujours au-dessus */
+}
+
+/* Le "Liquide" (La barre jaune qui se remplit) */
+.progress-bar {
+    height: 0%;       /* Vide au début */
+    width: 100%;      /* Prend toute la largeur du conteneur */
+    background: var(--accent); /* Ton jaune */
+    box-shadow: 0 0 5px var(--accent); /* Petit effet néon/lumineux */ 
+}
+
+/* IMPORTANT : Version Mobile */
+/* Sur téléphone, la barre à gauche prend trop de place et gêne la lecture.
+   On la remet en haut (horizontal) uniquement sur les petits écrans. */
+@media (max-width: 768px) {
+    .progress-container {
+        width: 100%;    /* Pleine largeur */
+        height: 4px;    /* Très fin */
+        top: 0;
+        left: 0;
+    }
+    
+    .progress-bar {
+        height: 100%;   /* Remplit la hauteur du conteneur */
+        width: 0%;      /* C'est la largeur qui va bouger maintenant */
+    }
+}
+
+
 /* ========================================
    TITRES ET PETIT TRUCS
    ======================================== */
-
 
 
 h1 {
@@ -186,6 +285,27 @@ h4{
     margin-bottom: 1.5rem;
     font-size: 1rem;
 }
+
+
+
+/* ========================================
+   TEXTE QUI S'ECRIT ET S'EFFACE
+   ======================================== */
+
+
+.txt-type {
+    color: var(--text-primary); /* Ton jaune */
+    border-right: 2px solid var(--text-primary); /* Le trait vertical */
+    padding-right: 5px;
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    0% { border-color: transparent; }
+    50% { border-color: var(--text-primary); }
+    100% { border-color: transparent; }
+}
+
 
 /* ========================================
    MENU NAV

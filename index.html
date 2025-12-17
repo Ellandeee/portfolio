@@ -13,8 +13,16 @@
 
 <body>
     
+    <!-- FORMES FOND -->
+    <div id="ambient-3d-scene"></div>
+
     <!-- CURSEUR CUSTOM -->
     <div id="custom-cursor"></div>
+
+    <!-- BARRE DE PROGRESSION -->
+    <div class="progress-container">
+        <div class="progress-bar" id="myBar"></div>
+    </div>
 
 
     <div class="container">
@@ -25,7 +33,7 @@
 
                 <!-- TITRE ET TEXTES EN DESSOUS -->
                 <h1>Ellande Cros</h1>
-                <h2>Développeur Jeux Vidéos</h2>
+                <h2>Je suis <span class="txt-type" data-wait="3000" data-words='["Développeur Web", "Développeur de Jeux Vidéos", "Passionné de Jeux Vidéos", "Game Designer"]'></span></h2>
                 <p class="tagline">Je crée des jeux vidéos super géniaux wow faut que je remplisse.</p>
 
                 <!-- MENU NAV -->
@@ -274,6 +282,168 @@
             el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
         });
     </script>
+
+
+    <!-- TEXTE QUI S'ECRIT ET QUI S'EFFACE -->
+    <script>
+        const TypeWriter = function(txtElement, words, wait = 3000) {
+            this.txtElement = txtElement;
+            this.words = JSON.parse(words);
+            this.txt = '';
+            this.wordIndex = 0;
+            this.wait = parseInt(wait, 10);
+            this.type();
+            this.isDeleting = false;
+        }
+
+        TypeWriter.prototype.type = function() {
+            const current = this.wordIndex % this.words.length;
+            const fullTxt = this.words[current];
+
+            if(this.isDeleting) {
+                this.txt = fullTxt.substring(0, this.txt.length - 1);
+            } else {
+                this.txt = fullTxt.substring(0, this.txt.length + 1);
+            }
+
+            this.txtElement.innerHTML = `<span class="txt">${this.txt}</span>`;
+
+            let typeSpeed = 100; // Vitesse de frappe
+
+            if(this.isDeleting) { typeSpeed /= 2; }
+
+            if(!this.isDeleting && this.txt === fullTxt) {
+                typeSpeed = this.wait;
+                this.isDeleting = true;
+            } else if(this.isDeleting && this.txt === '') {
+                this.isDeleting = false;
+                this.wordIndex++;
+                typeSpeed = 500;
+            }
+
+            setTimeout(() => this.type(), typeSpeed);
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+
+        function init() {
+            const txtElement = document.querySelector('.txt-type');
+            const words = txtElement.getAttribute('data-words');
+            const wait = txtElement.getAttribute('data-wait');
+            new TypeWriter(txtElement, words, wait);
+        }
+    </script>
+
+
+    <!-- BARRE DE PROGRESSION -->
+    <script>
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            
+            const myBar = document.getElementById("myBar");
+
+            // Si on est sur grand écran (barre verticale)
+            if (window.innerWidth > 768) {
+                myBar.style.height = scrolled + "%";
+                myBar.style.width = "100%"; // On force la largeur à rester fixe
+            } 
+            // Si on est sur mobile (barre horizontale)
+            else {
+                myBar.style.width = scrolled + "%";
+                myBar.style.height = "100%"; // On force la hauteur à rester fixe
+            }
+        });
+    </script>
+
+    <!-- FORMES FOND -->
+    <script>
+        const scene = document.getElementById('ambient-3d-scene');
+        const numberOfItems = 75;
+        const safeZone = 10;
+        const itemsPool = ['shape-triangle', 'shape-triangle', '}', '{', '[', ']', '<', '>', '/', ';', '++', 'JS', 'C#', '//'];
+
+        // --- VARIABLES DE MOUVEMENT ---
+        let targetMouseX = 0; // Là où est la souris
+        let targetMouseY = 0;
+        let currentMouseX = 0; // Là où en est "l'inertie"
+        let currentMouseY = 0;
+        
+        // REGLAGE DE L'INERTIE : Plus le chiffre est petit (ex: 0.02), plus c'est lourd/lent à s'arrêter.
+        // Plus il est grand (ex: 0.1), plus c'est réactif.
+        const lerpFactor = 0.05; 
+
+        const placedPositions = [];
+
+        // --- GÉNÉRATION (Inchangée mais nécessaire) ---
+        for (let i = 0; i < numberOfItems; i++) {
+            let x, y, tooClose;
+            let attempts = 0;
+            do {
+                x = Math.random() * 90 + 5;
+                y = Math.random() * 90 + 5;
+                tooClose = false;
+                for (let pos of placedPositions) {
+                    const dist = Math.sqrt(Math.pow(x - pos.x, 2) + Math.pow(y - pos.y, 2));
+                    if (dist < safeZone) { tooClose = true; break; }
+                }
+                attempts++;
+            } while (tooClose && attempts < 100);
+
+            if (attempts < 100) {
+                placedPositions.push({ x, y });
+                const item = document.createElement('div');
+                const content = itemsPool[Math.floor(Math.random() * itemsPool.length)];
+                item.classList.add('floating-mesh');
+                if (content.startsWith('shape-')) item.classList.add(content);
+                else { item.classList.add('char-item'); item.innerText = content; }
+
+                item.style.left = x + '%';
+                item.style.top = y + '%';
+                
+                const depth = Math.random() * 0.7 + 0.1;
+                item.dataset.depth = depth;
+                item.style.scale = 0.4 + (depth * 0.8);
+                
+                const randomRotation = Math.random() * 360;
+                item.style.setProperty('--base-rotation', `${randomRotation}deg`);
+                item.style.animationDuration = `${6 + Math.random() * 6}s`;
+                item.style.animationDelay = `${Math.random() * -12}s`;
+
+                scene.appendChild(item);
+            }
+        }
+
+        // --- GESTION DE LA SOURIS (On stocke juste la cible) ---
+        document.addEventListener('mousemove', (e) => {
+            targetMouseX = (e.clientX / window.innerWidth) - 0.5;
+            targetMouseY = (e.clientY / window.innerHeight) - 0.5;
+        });
+
+        // --- MOTEUR D'ANIMATION (Le Lerp) ---
+        function updateInertia() {
+            // Formule du Lerp : ValeurActuelle += (Cible - ValeurActuelle) * Facteur
+            currentMouseX += (targetMouseX - currentMouseX) * lerpFactor;
+            currentMouseY += (targetMouseY - currentMouseY) * lerpFactor;
+
+            const meshes = document.querySelectorAll('.floating-mesh');
+            meshes.forEach(mesh => {
+                const depth = parseFloat(mesh.dataset.depth);
+                const moveX = currentMouseX * (depth * 180);
+                const moveY = currentMouseY * (depth * 180);
+                
+                mesh.style.translate = `${moveX}px ${moveY}px`;
+            });
+
+            // On relance la fonction à la prochaine frame (60fps)
+            requestAnimationFrame(updateInertia);
+        }
+
+        // On lance la boucle
+        updateInertia();
+    </script>
+
 
 </body>
 
