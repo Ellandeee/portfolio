@@ -359,12 +359,13 @@
 
     <!-- FORMES FOND -->
     <script>
+        // FORMES FOND - VERSION OPTIMISÉE MOBILE
         const scene = document.getElementById('ambient-3d-scene');
 
         // Détection mobile et ajustement du nombre d'éléments
         const isMobile = window.innerWidth <= 768;
-        const numberOfItems = isMobile ? 20 : 40; // BEAUCOUP MOINS sur mobile
-        const safeZone = 8;
+        const numberOfItems = isMobile ? 20 : 80; // BEAUCOUP MOINS sur mobile
+        const safeZone = 5;
         const itemsPool = ['shape-triangle', '}', '{', '[', ']', '<', '>', '/', ';', '++', 'JS', 'C#', '//'];
 
         // --- REGLAGES DE LA PHYSIQUE  ---
@@ -430,31 +431,35 @@
         });
 
         // Désactiver l'interaction au clic sur mobile
-        if (!isMobile) {
-            document.addEventListener('mousedown', (e) => {
-                const clickX = e.clientX;
-                const clickY = e.clientY;
-                const meshes = document.querySelectorAll('.floating-mesh');
+        document.addEventListener('mousedown', (e) => {
+            const clickX = e.clientX;
+            const clickY = e.clientY;
+            const meshes = document.querySelectorAll('.floating-mesh');
 
-                meshes.forEach(mesh => {
-                    const rect = mesh.getBoundingClientRect();
-                    const meshX = rect.left + rect.width / 2;
-                    const meshY = rect.top + rect.height / 2;
+            meshes.forEach(mesh => {
+                const rect = mesh.getBoundingClientRect();
+                const meshX = rect.left + rect.width / 2;
+                const meshY = rect.top + rect.height / 2;
 
-                    const dx = meshX - clickX;
-                    const dy = meshY - clickY;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
+                const dx = meshX - clickX;
+                const dy = meshY - clickY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
 
-                    if (distance < shockRadius) {
-                        const depth = parseFloat(mesh.dataset.depth);
-                        const impulse = (1 - distance / shockRadius) * shockPower * depth;
-                        
-                        mesh.dataset.vx = (dx / distance) * impulse;
-                        mesh.dataset.vy = (dy / distance) * impulse;
-                    }
-                });
+                if (distance < shockRadius) {
+                    const depth = parseFloat(mesh.dataset.depth);
+                    const impulse = (1 - distance / shockRadius) * shockPower * depth;
+                    
+                    mesh.dataset.vx = (dx / distance) * impulse;
+                    mesh.dataset.vy = (dy / distance) * impulse;
+                    
+                    // Allumer temporairement l'élément lors de l'onde de choc
+                    mesh.classList.add('lit');
+                    setTimeout(() => {
+                        mesh.classList.remove('lit');
+                    }, 300);
+                }
             });
-        }
+        });
 
         // --- BOUCLE D'ANIMATION ---
         let lastTime = performance.now();
@@ -484,21 +489,19 @@
                 let oy = parseFloat(mesh.dataset.oy);
 
                 // Effet de lumière (seulement sur desktop ou si peu de mouvement)
-                if (!isMobile) {
-                    const rect = mesh.getBoundingClientRect();
-                    const meshX = rect.left + rect.width / 2;
-                    const meshY = rect.top + rect.height / 2;
+                const rect = mesh.getBoundingClientRect();
+                const meshX = rect.left + rect.width / 2;
+                const meshY = rect.top + rect.height / 2;
 
-                    const distToMouse = Math.sqrt(
-                        Math.pow(targetMouseX * window.innerWidth + window.innerWidth/2 - meshX, 2) + 
-                        Math.pow(targetMouseY * window.innerHeight + window.innerHeight/2 - meshY, 2)
-                    );
+                const distToMouse = Math.sqrt(
+                    Math.pow(targetMouseX * window.innerWidth + window.innerWidth/2 - meshX, 2) + 
+                    Math.pow(targetMouseY * window.innerHeight + window.innerHeight/2 - meshY, 2)
+                );
 
-                    if (distToMouse < 250) {
-                        mesh.classList.add('lit');
-                    } else {
-                        mesh.classList.remove('lit');
-                    }
+                if (distToMouse < 250) {
+                    mesh.classList.add('lit');
+                } else {
+                    mesh.classList.remove('lit');
                 }
 
                 // Physique

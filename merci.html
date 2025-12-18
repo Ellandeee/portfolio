@@ -69,21 +69,25 @@
 
     <!-- FORMES FOND -->
     <script>
+        // FORMES FOND - VERSION OPTIMISÉE MOBILE
         const scene = document.getElementById('ambient-3d-scene');
-        const numberOfItems = 80;
+
+        // Détection mobile et ajustement du nombre d'éléments
+        const isMobile = window.innerWidth <= 768;
+        const numberOfItems = isMobile ? 20 : 80; // BEAUCOUP MOINS sur mobile
         const safeZone = 5;
         const itemsPool = ['shape-triangle', '}', '{', '[', ']', '<', '>', '/', ';', '++', 'JS', 'C#', '//'];
 
         // --- REGLAGES DE LA PHYSIQUE  ---
-        const shockRadius = 500;      // Rayon d'action
-        const shockPower = 25;        // Moins violent (poussée initiale faible)
-        const friction = 0.95;        // Les objets glissent et s'arrêtent lentement
-        const returnFactor = 0.004;   // RETOUR TRÈS LENT (presque imperceptible au début)
+        const shockRadius = isMobile ? 300 : 500;
+        const shockPower = isMobile ? 15 : 25;
+        const friction = 0.95;
+        const returnFactor = 0.004;
 
         // --- VARIABLES SOURIS ---
         let targetMouseX = 0, targetMouseY = 0;
         let currentMouseX = 0, currentMouseY = 0;
-        const mouseLerp = 0.05;
+        const mouseLerp = isMobile ? 0.1 : 0.05; // Plus réactif sur mobile
 
         const placedPositions = [];
 
@@ -117,10 +121,10 @@
                 item.style.scale = 0.4 + (depth * 0.8);
 
                 // PHYSIQUE INDIVIDUELLE
-                item.dataset.vx = 0; // Vélocité X
-                item.dataset.vy = 0; // Vélocité Y
-                item.dataset.ox = 0; // Offset X
-                item.dataset.oy = 0; // Offset Y
+                item.dataset.vx = 0;
+                item.dataset.vy = 0;
+                item.dataset.ox = 0;
+                item.dataset.oy = 0;
                 
                 item.style.setProperty('--base-rotation', `${Math.random() * 360}deg`);
                 item.style.animationDuration = `${8 + Math.random() * 8}s`;
@@ -136,6 +140,7 @@
             targetMouseY = (e.clientY / window.innerHeight) - 0.5;
         });
 
+        // Désactiver l'interaction au clic sur mobile
         document.addEventListener('mousedown', (e) => {
             const clickX = e.clientX;
             const clickY = e.clientY;
@@ -152,17 +157,36 @@
 
                 if (distance < shockRadius) {
                     const depth = parseFloat(mesh.dataset.depth);
-                    // On donne une VITESSE de départ, pas une position
                     const impulse = (1 - distance / shockRadius) * shockPower * depth;
                     
                     mesh.dataset.vx = (dx / distance) * impulse;
                     mesh.dataset.vy = (dy / distance) * impulse;
+                    
+                    // Allumer temporairement l'élément lors de l'onde de choc
+                    mesh.classList.add('lit');
+                    setTimeout(() => {
+                        mesh.classList.remove('lit');
+                    }, 300);
                 }
             });
         });
 
         // --- BOUCLE D'ANIMATION ---
-        function update() {
+        let lastTime = performance.now();
+        const targetFPS = isMobile ? 30 : 60; // 30 FPS sur mobile
+        const frameDelay = 1000 / targetFPS;
+
+        function update(currentTime) {
+            const deltaTime = currentTime - lastTime;
+            
+            // Limiter le framerate sur mobile
+            if (deltaTime < frameDelay) {
+                requestAnimationFrame(update);
+                return;
+            }
+            
+            lastTime = currentTime - (deltaTime % frameDelay);
+            
             currentMouseX += (targetMouseX - currentMouseX) * mouseLerp;
             currentMouseY += (targetMouseY - currentMouseY) * mouseLerp;
 
@@ -174,43 +198,41 @@
                 let ox = parseFloat(mesh.dataset.ox);
                 let oy = parseFloat(mesh.dataset.oy);
 
+                // Effet de lumière (seulement sur desktop ou si peu de mouvement)
                 const rect = mesh.getBoundingClientRect();
                 const meshX = rect.left + rect.width / 2;
                 const meshY = rect.top + rect.height / 2;
 
-                // Distance entre la souris réelle (e.clientX/Y) et l'objet
-                // Note : Utilise les variables globales mouseX/Y que tu as déjà
                 const distToMouse = Math.sqrt(
                     Math.pow(targetMouseX * window.innerWidth + window.innerWidth/2 - meshX, 2) + 
                     Math.pow(targetMouseY * window.innerHeight + window.innerHeight/2 - meshY, 2)
                 );
 
-                // Si la souris est à moins de 250px, on allume
                 if (distToMouse < 250) {
                     mesh.classList.add('lit');
                 } else {
                     mesh.classList.remove('lit');
                 }
 
-                // 1. APPLIQUER LA VITESSE À L'OFFSET
+                // Physique
                 ox += vx;
                 oy += vy;
 
-                // 2. FRICTION (Fait que l'objet s'arrête de glisser au loin)
                 vx *= friction;
                 vy *= friction;
 
-                // 3. RETOUR TRÈS LENT (L'élastique mou)
                 ox += (0 - ox) * returnFactor;
                 oy += (0 - oy) * returnFactor;
 
-                // Sauvegarde
-                mesh.dataset.vx = vx; mesh.dataset.vy = vy;
-                mesh.dataset.ox = ox; mesh.dataset.oy = oy;
+                mesh.dataset.vx = vx;
+                mesh.dataset.vy = vy;
+                mesh.dataset.ox = ox;
+                mesh.dataset.oy = oy;
 
-                // 4. RENDU FINAL
-                const finalX = (currentMouseX * depth * 200) + ox;
-                const finalY = (currentMouseY * depth * 200) + oy;
+                // Rendu
+                const parallaxMultiplier = isMobile ? 100 : 200; // Moins de mouvement sur mobile
+                const finalX = (currentMouseX * depth * parallaxMultiplier) + ox;
+                const finalY = (currentMouseY * depth * parallaxMultiplier) + oy;
                 
                 mesh.style.translate = `${finalX}px ${finalY}px`;
             });
@@ -218,7 +240,7 @@
             requestAnimationFrame(update);
         }
 
-        update();
+        update(performance.now());
     </script>
 
 </body>
