@@ -38,15 +38,13 @@
         function updateHalo(e) {
             let x, y;
             
-            // Si c'est un événement tactile
+            // On utilise pageX et pageY pour inclure la distance de scroll
             if (e.touches && e.touches.length > 0) {
-                x = e.touches[0].clientX;
-                y = e.touches[0].clientY;
-            } 
-            // Si c'est un événement souris
-            else {
-                x = e.clientX;
-                y = e.clientY;
+                x = e.touches[0].pageX;
+                y = e.touches[0].pageY;
+            } else {
+                x = e.pageX;
+                y = e.pageY;
             }
 
             body.style.setProperty('--mouse-x', x + 'px');
