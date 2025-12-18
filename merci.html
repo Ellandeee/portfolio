@@ -34,11 +34,28 @@
     <!-- "GPS" DE LA LAMPE TORCHE -->
     <script>
         const body = document.body;
-            document.addEventListener('mousemove', (e) => {
-                // On met à jour les variables CSS avec la position X et Y de la souris
-                body.style.setProperty('--mouse-x', e.clientX + 'px');
-                body.style.setProperty('--mouse-y', e.clientY + 'px');
-            });
+
+        function updateHalo(e) {
+            let x, y;
+            
+            // Si c'est un événement tactile
+            if (e.touches && e.touches.length > 0) {
+                x = e.touches[0].clientX;
+                y = e.touches[0].clientY;
+            } 
+            // Si c'est un événement souris
+            else {
+                x = e.clientX;
+                y = e.clientY;
+            }
+
+            body.style.setProperty('--mouse-x', x + 'px');
+            body.style.setProperty('--mouse-y', y + 'px');
+        }
+
+        document.addEventListener('mousemove', updateHalo);
+        document.addEventListener('touchmove', updateHalo, { passive: true });
+        document.addEventListener('touchstart', updateHalo, { passive: true });
     </script>
 
 
@@ -134,11 +151,22 @@
             }
         }
 
-        // --- ÉCOUTEURS ---
-        document.addEventListener('mousemove', (e) => {
-            targetMouseX = (e.clientX / window.innerWidth) - 0.5;
-            targetMouseY = (e.clientY / window.innerHeight) - 0.5;
-        });
+        // --- ÉCOUTEURS (SOURIS + TACTILE) ---
+        function handleMove(e) {
+            let x, y;
+            if (e.touches && e.touches.length > 0) {
+                x = e.touches[0].clientX;
+                y = e.touches[0].clientY;
+            } else {
+                x = e.clientX;
+                y = e.clientY;
+            }
+            targetMouseX = (x / window.innerWidth) - 0.5;
+            targetMouseY = (y / window.innerHeight) - 0.5;
+        }
+
+        document.addEventListener('mousemove', handleMove);
+        document.addEventListener('touchmove', handleMove, { passive: true });
 
         // Désactiver l'interaction au clic sur mobile
         document.addEventListener('mousedown', (e) => {
