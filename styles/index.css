@@ -530,6 +530,14 @@ h4{
 
 /* Tablettes (portrait et paysage) */
 @media (max-width: 1024px) {
+
+    body {
+        /* On désactive UNIQUEMENT le dégradé du halo */
+        background-image: none !important;
+        /* On s'assure que le fond reste bien noir */
+        background-color: var(--bg-color) !important;
+    }
+    
     .container {
         flex-direction: column;
         gap: 3rem;
