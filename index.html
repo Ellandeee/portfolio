@@ -252,13 +252,13 @@
 
     <!-- "GPS" DE LA LAMPE TORCHE -->
     <script>
-        const flashlight = document.getElementById('flashlight-layer');
-        
         // On n'active l'effet que sur PC (largeur > 1024px)
         if (window.innerWidth > 1024) {
             document.addEventListener('mousemove', (e) => {
-                flashlight.style.setProperty('--mouse-x', e.clientX + 'px');
-                flashlight.style.setProperty('--mouse-y', e.clientY + 'px');
+                // On fixe les variables sur l'élément racine (<html>)
+                // Cela permet au CSS de les récupérer partout sans erreur
+                document.documentElement.style.setProperty('--mouse-x', e.clientX + 'px');
+                document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px');
             });
         }
     </script>
