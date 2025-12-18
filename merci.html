@@ -70,23 +70,24 @@
     <!-- FORMES FOND -->
     <script>
         const scene = document.getElementById('ambient-3d-scene');
-        const numberOfItems = 75;
-        const safeZone = 10;
-        const itemsPool = ['shape-triangle', 'shape-triangle', '}', '{', '[', ']', '<', '>', '/', ';', '++', 'JS', 'C#', '//'];
+        const numberOfItems = 80;
+        const safeZone = 5;
+        const itemsPool = ['shape-triangle', '}', '{', '[', ']', '<', '>', '/', ';', '++', 'JS', 'C#', '//'];
 
-        // --- VARIABLES DE MOUVEMENT ---
-        let targetMouseX = 0; // Là où est la souris
-        let targetMouseY = 0;
-        let currentMouseX = 0; // Là où en est "l'inertie"
-        let currentMouseY = 0;
-        
-        // REGLAGE DE L'INERTIE : Plus le chiffre est petit (ex: 0.02), plus c'est lourd/lent à s'arrêter.
-        // Plus il est grand (ex: 0.1), plus c'est réactif.
-        const lerpFactor = 0.05; 
+        // --- REGLAGES DE LA PHYSIQUE  ---
+        const shockRadius = 500;      // Rayon d'action
+        const shockPower = 25;        // Moins violent (poussée initiale faible)
+        const friction = 0.95;        // Les objets glissent et s'arrêtent lentement
+        const returnFactor = 0.004;   // RETOUR TRÈS LENT (presque imperceptible au début)
+
+        // --- VARIABLES SOURIS ---
+        let targetMouseX = 0, targetMouseY = 0;
+        let currentMouseX = 0, currentMouseY = 0;
+        const mouseLerp = 0.05;
 
         const placedPositions = [];
 
-        // --- GÉNÉRATION (Inchangée mais nécessaire) ---
+        // --- GÉNÉRATION ---
         for (let i = 0; i < numberOfItems; i++) {
             let x, y, tooClose;
             let attempts = 0;
@@ -105,9 +106,8 @@
                 placedPositions.push({ x, y });
                 const item = document.createElement('div');
                 const content = itemsPool[Math.floor(Math.random() * itemsPool.length)];
-                item.classList.add('floating-mesh');
-                if (content.startsWith('shape-')) item.classList.add(content);
-                else { item.classList.add('char-item'); item.innerText = content; }
+                item.className = 'floating-mesh ' + (content.startsWith('shape-') ? content : 'char-item');
+                if (!content.startsWith('shape-')) item.innerText = content;
 
                 item.style.left = x + '%';
                 item.style.top = y + '%';
@@ -115,43 +115,110 @@
                 const depth = Math.random() * 0.7 + 0.1;
                 item.dataset.depth = depth;
                 item.style.scale = 0.4 + (depth * 0.8);
+
+                // PHYSIQUE INDIVIDUELLE
+                item.dataset.vx = 0; // Vélocité X
+                item.dataset.vy = 0; // Vélocité Y
+                item.dataset.ox = 0; // Offset X
+                item.dataset.oy = 0; // Offset Y
                 
-                const randomRotation = Math.random() * 360;
-                item.style.setProperty('--base-rotation', `${randomRotation}deg`);
-                item.style.animationDuration = `${6 + Math.random() * 6}s`;
-                item.style.animationDelay = `${Math.random() * -12}s`;
+                item.style.setProperty('--base-rotation', `${Math.random() * 360}deg`);
+                item.style.animationDuration = `${8 + Math.random() * 8}s`;
+                item.style.animationDelay = `${Math.random() * -15}s`;
 
                 scene.appendChild(item);
             }
         }
 
-        // --- GESTION DE LA SOURIS (On stocke juste la cible) ---
+        // --- ÉCOUTEURS ---
         document.addEventListener('mousemove', (e) => {
             targetMouseX = (e.clientX / window.innerWidth) - 0.5;
             targetMouseY = (e.clientY / window.innerHeight) - 0.5;
         });
 
-        // --- MOTEUR D'ANIMATION (Le Lerp) ---
-        function updateInertia() {
-            // Formule du Lerp : ValeurActuelle += (Cible - ValeurActuelle) * Facteur
-            currentMouseX += (targetMouseX - currentMouseX) * lerpFactor;
-            currentMouseY += (targetMouseY - currentMouseY) * lerpFactor;
+        document.addEventListener('mousedown', (e) => {
+            const clickX = e.clientX;
+            const clickY = e.clientY;
+            const meshes = document.querySelectorAll('.floating-mesh');
+
+            meshes.forEach(mesh => {
+                const rect = mesh.getBoundingClientRect();
+                const meshX = rect.left + rect.width / 2;
+                const meshY = rect.top + rect.height / 2;
+
+                const dx = meshX - clickX;
+                const dy = meshY - clickY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < shockRadius) {
+                    const depth = parseFloat(mesh.dataset.depth);
+                    // On donne une VITESSE de départ, pas une position
+                    const impulse = (1 - distance / shockRadius) * shockPower * depth;
+                    
+                    mesh.dataset.vx = (dx / distance) * impulse;
+                    mesh.dataset.vy = (dy / distance) * impulse;
+                }
+            });
+        });
+
+        // --- BOUCLE D'ANIMATION ---
+        function update() {
+            currentMouseX += (targetMouseX - currentMouseX) * mouseLerp;
+            currentMouseY += (targetMouseY - currentMouseY) * mouseLerp;
 
             const meshes = document.querySelectorAll('.floating-mesh');
             meshes.forEach(mesh => {
                 const depth = parseFloat(mesh.dataset.depth);
-                const moveX = currentMouseX * (depth * 180);
-                const moveY = currentMouseY * (depth * 180);
+                let vx = parseFloat(mesh.dataset.vx);
+                let vy = parseFloat(mesh.dataset.vy);
+                let ox = parseFloat(mesh.dataset.ox);
+                let oy = parseFloat(mesh.dataset.oy);
+
+                const rect = mesh.getBoundingClientRect();
+                const meshX = rect.left + rect.width / 2;
+                const meshY = rect.top + rect.height / 2;
+
+                // Distance entre la souris réelle (e.clientX/Y) et l'objet
+                // Note : Utilise les variables globales mouseX/Y que tu as déjà
+                const distToMouse = Math.sqrt(
+                    Math.pow(targetMouseX * window.innerWidth + window.innerWidth/2 - meshX, 2) + 
+                    Math.pow(targetMouseY * window.innerHeight + window.innerHeight/2 - meshY, 2)
+                );
+
+                // Si la souris est à moins de 250px, on allume
+                if (distToMouse < 250) {
+                    mesh.classList.add('lit');
+                } else {
+                    mesh.classList.remove('lit');
+                }
+
+                // 1. APPLIQUER LA VITESSE À L'OFFSET
+                ox += vx;
+                oy += vy;
+
+                // 2. FRICTION (Fait que l'objet s'arrête de glisser au loin)
+                vx *= friction;
+                vy *= friction;
+
+                // 3. RETOUR TRÈS LENT (L'élastique mou)
+                ox += (0 - ox) * returnFactor;
+                oy += (0 - oy) * returnFactor;
+
+                // Sauvegarde
+                mesh.dataset.vx = vx; mesh.dataset.vy = vy;
+                mesh.dataset.ox = ox; mesh.dataset.oy = oy;
+
+                // 4. RENDU FINAL
+                const finalX = (currentMouseX * depth * 200) + ox;
+                const finalY = (currentMouseY * depth * 200) + oy;
                 
-                mesh.style.translate = `${moveX}px ${moveY}px`;
+                mesh.style.translate = `${finalX}px ${finalY}px`;
             });
 
-            // On relance la fonction à la prochaine frame (60fps)
-            requestAnimationFrame(updateInertia);
+            requestAnimationFrame(update);
         }
 
-        // On lance la boucle
-        updateInertia();
+        update();
     </script>
 
 </body>

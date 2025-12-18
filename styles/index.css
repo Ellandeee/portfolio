@@ -60,12 +60,18 @@ body {
 .floating-mesh {
     position: absolute;
     border: 1px solid var(--accent);
-    opacity: 0.1;
-    transition: opacity 0.3s;
+    opacity: 0.22;
     translate: -50% -50%; 
     pointer-events: none;
     will-change: transform, translate;
     animation: idleFloat 6s ease-in-out infinite;
+
+    filter: blur(1px) brightness(0.5);
+    transition: opacity 0.4s ease, filter 0.4s ease;
+}
+.floating-mesh.lit {
+    opacity: 0.42;
+    filter: blur(0px) brightness(1) drop-shadow(0 0 8px var(--accent));
 }
 
 /* Triangles */
@@ -106,7 +112,7 @@ body{
     margin: 0;
     background-attachment: fixed;
     background-image: radial-gradient(
-        400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+        350px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
         rgba(244, 234, 12, 0.075),
         transparent 100%
     );
@@ -172,22 +178,6 @@ body{
     box-shadow: 0 0 5px var(--accent); /* Petit effet néon/lumineux */ 
 }
 
-/* IMPORTANT : Version Mobile */
-/* Sur téléphone, la barre à gauche prend trop de place et gêne la lecture.
-   On la remet en haut (horizontal) uniquement sur les petits écrans. */
-@media (max-width: 768px) {
-    .progress-container {
-        width: 100%;    /* Pleine largeur */
-        height: 4px;    /* Très fin */
-        top: 0;
-        left: 0;
-    }
-    
-    .progress-bar {
-        height: 100%;   /* Remplit la hauteur du conteneur */
-        width: 0%;      /* C'est la largeur qui va bouger maintenant */
-    }
-}
 
 
 /* ========================================
@@ -534,34 +524,461 @@ h4{
     transition: transform 0.3s;
 }
 
+
 /* ========================================
    RESPONSIVE
    ======================================== */
 
+/* Tablettes (portrait et paysage) */
 @media (max-width: 1024px) {
     .container {
         flex-direction: column;
-        gap: 2rem;
+        gap: 3rem;
+        padding: 0 32px;
     }
 
     .header {
         width: 100%;
         height: auto;
         position: relative;
-        padding-top: 4rem;
-        padding-bottom: 2rem;
+        padding-top: 3rem;
+        padding-bottom: 3rem;
     }
 
     .content {
         width: 100%;
         padding-top: 0;
+        padding-bottom: 4rem;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    h2 {
+        font-size: 1.1rem;
     }
     
     .tagline {
         max-width: 100%;
+        margin-bottom: 2rem;
     }
     
     .section {
         min-height: auto;
+        margin-bottom: 4rem;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    /* Navigation horizontale sur tablette */
+    .nav ul {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .nav li {
+        margin-bottom: 0;
+    }
+    
+    .nav a {
+        font-size: 1rem;
+    }
+
+    /* Projets en colonne sur tablette */
+    .project-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 24px;
+    }
+    
+    .project-img {
+        width: 100%;
+        height: 200px;
+        order: -1; /* Image en haut */
+        margin-bottom: 16px;
+    }
+
+    /* Barre de progression horizontale */
+    .progress-container {
+        width: 100%;
+        height: 4px;
+        top: 0;
+        left: 0;
+    }
+    
+    .progress-bar {
+        height: 100%;
+        width: 0%;
+    }
+}
+
+/* Smartphones (paysage) */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 24px;
+        gap: 2rem;
+    }
+    
+    .header {
+        padding-top: 2.5rem;
+        padding-bottom: 2.5rem;
+    }
+    
+    .content {
+        padding-bottom: 3rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1rem;
+    }
+    
+    .tagline {
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .section {
+        margin-bottom: 3rem;
+        padding-top: 1rem;
+    }
+    
+    .section-title {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+    
+    .section p {
+        font-size: 0.95rem;
+        margin-bottom: 1.2rem;
+    }
+
+    /* Navigation */
+    .nav ul {
+        gap: 1rem;
+    }
+    
+    .nav a {
+        font-size: 0.9rem;
+    }
+    
+    .nav-indicator {
+        width: 8px;
+        height: 8px;
+        margin-right: 0.75rem;
+    }
+    
+    .nav a:hover .nav-indicator,
+    .nav a.active .nav-indicator {
+        width: 40px;
+    }
+
+    /* Réseaux sociaux */
+    .social-links {
+        gap: 1.5rem;
+        margin-top: 2.5rem;
+    }
+    
+    .social-icon {
+        width: 28px;
+        height: 28px;
+    }
+
+    /* Projets */
+    .project-card {
+        padding: 20px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .project-card h4 {
+        font-size: 1.15rem;
+    }
+    
+    .project-img {
+        width: 100%;
+        height: 180px;
+        margin-bottom: 16px;
+    }
+    
+    .tags {
+        gap: 8px;
+        margin-top: 12px;
+    }
+    
+    .tag {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+    }
+
+    /* Formulaire */
+    .contact-form {
+        max-width: 100%;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .form-group {
+        margin-top: 0.75rem;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        font-size: 0.95rem;
+        padding: 8px 0;
+    }
+    
+    .form-group label {
+        font-size: 0.9rem;
+        top: 8px;
+    }
+    
+    .form-group input:focus ~ label,
+    .form-group input:not(:placeholder-shown) ~ label,
+    .form-group textarea:focus ~ label,
+    .form-group textarea:not(:placeholder-shown) ~ label {
+        top: -18px;
+        font-size: 0.85rem;
+    }
+    
+    .submit-btn {
+        font-size: 0.9rem;
+        padding: 10px 20px;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Smartphones (portrait) */
+@media (max-width: 480px) {
+    .container {
+        padding: 0 20px;
+        gap: 1.5rem;
+    }
+    
+    .header {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    
+    h1 {
+        font-size: 1.75rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    h2 {
+        font-size: 0.9rem;
+    }
+    
+    .tagline {
+        font-size: 0.9rem;
+        margin-bottom: 1.2rem;
+    }
+    
+    .section {
+        margin-bottom: 2.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+    }
+    
+    .section p {
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    /* Navigation en colonne sur petit mobile */
+    .nav ul {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .nav a {
+        font-size: 0.85rem;
+        padding: 3px 0;
+    }
+    
+    .nav-indicator {
+        width: 6px;
+        height: 6px;
+        margin-right: 0.6rem;
+    }
+    
+    .nav a:hover .nav-indicator,
+    .nav a.active .nav-indicator {
+        width: 35px;
+    }
+
+    /* Réseaux sociaux */
+    .social-links {
+        gap: 1.3rem;
+        margin-top: 3rem;
+    }
+    
+    .social-icon {
+        width: 26px;
+        height: 26px;
+    }
+
+    /* Projets */
+    .project-card {
+        padding: 18px;
+        margin-top: 18px;
+        margin-bottom: 18px;
+    }
+    
+    .project-card h4 {
+        font-size: 1.05rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    .project-card p {
+        font-size: 0.9rem;
+    }
+    
+    .project-img {
+        width: 100%;
+        height: 150px;
+        margin-bottom: 14px;
+    }
+    
+    .tags {
+        gap: 6px;
+        margin-top: 10px;
+    }
+    
+    .tag {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+    }
+
+    /* Formulaire */
+    .contact-form {
+        gap: 1.2rem;
+        margin-top: 1.2rem;
+    }
+    
+    .submit-btn {
+        font-size: 0.85rem;
+        padding: 9px 16px;
+    }
+    
+    .submit-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    /* Curseur personnalisé plus petit sur mobile */
+    #custom-cursor {
+        width: 16px;
+        height: 16px;
+    }
+    
+    #custom-cursor.hovered {
+        width: 22px;
+        height: 22px;
+    }
+
+    /* Halo de lumière réduit sur mobile */
+    body {
+        background-image: radial-gradient(
+            250px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+            rgba(244, 234, 12, 0.06),
+            transparent 100%
+        );
+    }
+
+    /* Formes de fond moins nombreuses (via JS) */
+    .floating-mesh {
+        opacity: 0.15;
+    }
+    
+    .floating-mesh.lit {
+        opacity: 0.3;
+    }
+}
+
+/* Très petits écrans */
+@media (max-width: 360px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.1rem;
+    }
+    
+    .project-img {
+        height: 120px;
+    }
+}
+
+/* Optimisation pour écrans tactiles */
+@media (hover: none) and (pointer: coarse) {
+    /* Désactive le curseur personnalisé sur tactile */
+    #custom-cursor {
+        display: none;
+    }
+    
+    html, body, a, button, input, textarea {
+        cursor: auto !important;
+    }
+    
+    /* Augmente les zones de clic */
+    .nav a {
+        padding: 8px 0;
+    }
+    
+    .submit-btn {
+        padding: 14px 24px;
+    }
+    
+    /* Désactive les effets hover sur tactile */
+    .project-card:hover {
+        transform: none;
+        background: transparent;
+    }
+    
+    .social-links a:hover .social-icon {
+        transform: none;
+    }
+    
+    /* Réduit l'impact des animations */
+    .floating-mesh {
+        animation-duration: 10s !important;
+    }
+}
+
+/* Mode paysage pour smartphones */
+@media (max-height: 500px) and (orientation: landscape) {
+    .header {
+        padding-top: 1rem;
+        padding-bottom: 0.5rem;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    h2 {
+        font-size: 0.85rem;
+    }
+    
+    .tagline {
+        margin-bottom: 1rem;
+    }
+    
+    .section {
+        margin-bottom: 2rem;
+        padding-top: 0.5rem;
     }
 }
