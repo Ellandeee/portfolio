@@ -33,14 +33,15 @@
 
     <!-- "GPS" DE LA LAMPE TORCHE -->
     <script>
-        const body = document.body;
+        const flashlight = document.getElementById('flashlight-layer');
         
-        // On n'écoute que la souris
-        document.addEventListener('mousemove', (e) => {
-            // Ce calcul ne s'exécute pas sur mobile car il n'y a pas d'événement 'mousemove'
-            body.style.setProperty('--mouse-x', e.clientX + 'px');
-            body.style.setProperty('--mouse-y', e.clientY + 'px');
-        });
+        // On n'active l'effet que sur PC (largeur > 1024px)
+        if (window.innerWidth > 1024) {
+            document.addEventListener('mousemove', (e) => {
+                flashlight.style.setProperty('--mouse-x', e.clientX + 'px');
+                flashlight.style.setProperty('--mouse-y', e.clientY + 'px');
+            });
+        }
     </script>
 
 
@@ -76,7 +77,7 @@
 
         // Détection mobile et ajustement du nombre d'éléments
         const isMobile = window.innerWidth <= 768;
-        const numberOfItems = isMobile ? 20 : 40; // BEAUCOUP MOINS sur mobile
+        const numberOfItems = isMobile ? 16 : 32; // BEAUCOUP MOINS sur mobile
         const safeZone = 5;
         const itemsPool = ['shape-triangle', '}', '{', '[', ']', '<', '>', '/', ';', '++', 'JS', 'C#', '//'];
 

@@ -16,6 +16,8 @@
     <!-- FORMES FOND -->
     <div id="ambient-3d-scene"></div>
 
+    <div id="flashlight-layer"></div>
+
     <!-- CURSEUR CUSTOM -->
     <div id="custom-cursor"></div>
 
@@ -250,14 +252,15 @@
 
     <!-- "GPS" DE LA LAMPE TORCHE -->
     <script>
-        const body = document.body;
+        const flashlight = document.getElementById('flashlight-layer');
         
-        // On n'écoute que la souris
-        document.addEventListener('mousemove', (e) => {
-            // Ce calcul ne s'exécute pas sur mobile car il n'y a pas d'événement 'mousemove'
-            body.style.setProperty('--mouse-x', e.clientX + 'px');
-            body.style.setProperty('--mouse-y', e.clientY + 'px');
-        });
+        // On n'active l'effet que sur PC (largeur > 1024px)
+        if (window.innerWidth > 1024) {
+            document.addEventListener('mousemove', (e) => {
+                flashlight.style.setProperty('--mouse-x', e.clientX + 'px');
+                flashlight.style.setProperty('--mouse-y', e.clientY + 'px');
+            });
+        }
     </script>
 
 
@@ -366,8 +369,8 @@
 
         // Détection mobile et ajustement du nombre d'éléments
         const isMobile = window.innerWidth <= 768;
-        const numberOfItems = isMobile ? 20 : 40; // BEAUCOUP MOINS sur mobile
-        const safeZone = 5;
+        const numberOfItems = isMobile ? 16 : 32; // BEAUCOUP MOINS sur mobile
+        const safeZone = 12;
         const itemsPool = ['shape-triangle', '}', '{', '[', ']', '<', '>', '/', ';', '++', 'JS', 'C#', '//'];
 
         // --- REGLAGES DE LA PHYSIQUE  ---
@@ -474,26 +477,20 @@
             });
         });
 
-        // --- BOUCLE D'ANIMATION ---
-        let lastTime = performance.now();
-        const targetFPS = 60;
-        const frameDelay = 1000 / targetFPS;
-
-        function update(currentTime) {
-            const deltaTime = currentTime - lastTime;
-            
-            // Limiter le framerate sur mobile
-            if (deltaTime < frameDelay) {
-                requestAnimationFrame(update);
-                return;
-            }
-            
-            lastTime = currentTime - (deltaTime % frameDelay);
-            
+        // --- BOUCLE D'ANIMATION  ---
+        function update() {
+            // On laisse le navigateur gérer la vitesse maximale (60Hz, 90Hz, 120Hz)
             currentMouseX += (targetMouseX - currentMouseX) * mouseLerp;
             currentMouseY += (targetMouseY - currentMouseY) * mouseLerp;
 
             const meshes = document.querySelectorAll('.floating-mesh');
+            
+            // On récupère les dimensions une seule fois par frame pour gagner en perf
+            const winW = window.innerWidth;
+            const winH = window.innerHeight;
+            const centerX = targetMouseX * winW + winW / 2;
+            const centerY = targetMouseY * winH + winH / 2;
+
             meshes.forEach(mesh => {
                 const depth = parseFloat(mesh.dataset.depth);
                 let vx = parseFloat(mesh.dataset.vx);
@@ -501,29 +498,27 @@
                 let ox = parseFloat(mesh.dataset.ox);
                 let oy = parseFloat(mesh.dataset.oy);
 
-                // Effet de lumière (seulement sur desktop ou si peu de mouvement)
+                // --- OPTIMISATION DU GLOW ---
+                // On ne calcule le Glow sur mobile que si c'est vraiment nécessaire
                 const rect = mesh.getBoundingClientRect();
                 const meshX = rect.left + rect.width / 2;
                 const meshY = rect.top + rect.height / 2;
 
-                const distToMouse = Math.sqrt(
-                    Math.pow(targetMouseX * window.innerWidth + window.innerWidth/2 - meshX, 2) + 
-                    Math.pow(targetMouseY * window.innerHeight + window.innerHeight/2 - meshY, 2)
-                );
+                const dxMouse = centerX - meshX;
+                const dyMouse = centerY - meshY;
+                const distSq = dxMouse * dxMouse + dyMouse * dyMouse; // On utilise la distance au carré (plus rapide)
 
-                if (distToMouse < 250) {
+                if (distSq < 62500) { // 62500 = 250px au carré
                     mesh.classList.add('lit');
                 } else {
                     mesh.classList.remove('lit');
                 }
 
-                // Physique
+                // --- PHYSIQUE ---
                 ox += vx;
                 oy += vy;
-
                 vx *= friction;
                 vy *= friction;
-
                 ox += (0 - ox) * returnFactor;
                 oy += (0 - oy) * returnFactor;
 
@@ -532,8 +527,8 @@
                 mesh.dataset.ox = ox;
                 mesh.dataset.oy = oy;
 
-                // Rendu
-                const parallaxMultiplier = isMobile ? 100 : 200; // Moins de mouvement sur mobile
+                // --- RENDU ---
+                const parallaxMultiplier = isMobile ? 120 : 200; 
                 const finalX = (currentMouseX * depth * parallaxMultiplier) + ox;
                 const finalY = (currentMouseY * depth * parallaxMultiplier) + oy;
                 
@@ -543,7 +538,8 @@
             requestAnimationFrame(update);
         }
 
-        update(performance.now());
+        // On lance la boucle
+        update();
     </script>
 
 

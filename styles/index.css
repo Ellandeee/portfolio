@@ -106,11 +106,22 @@ html, body, a, button, input, textarea {
     cursor: none !important;
 }
 
-/* Halo de lumière autour du curseur */
-body{
+body {
+    background-color: var(--bg-color);
     min-height: 100vh;
     margin: 0;
-    background-image: radial-gradient(
+}
+
+/* Halo de lumiere */
+#flashlight-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none; /* Laisse passer les clics vers tes boutons */
+    z-index: -1;          /* Entre le fond noir (-2) et ton contenu (0) */
+    background: radial-gradient(
         350px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
         rgba(244, 234, 12, 0.075),
         transparent 100%
@@ -531,11 +542,8 @@ h4{
 /* Tablettes (portrait et paysage) */
 @media (max-width: 1024px) {
 
-    body {
-        /* On désactive UNIQUEMENT le dégradé du halo */
-        background-image: none !important;
-        /* On s'assure que le fond reste bien noir */
-        background-color: var(--bg-color) !important;
+    #flashlight-layer {
+        display: none !important;
     }
     
     .container {
