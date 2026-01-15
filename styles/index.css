@@ -3,7 +3,7 @@
    ======================================== */
 
 :root {
-    --bg-color: #0f1115;        /* Noir avec une infime touche de bleu nuit */
+    --bg-color: #0d0f13;        /* Noir avec une infime touche de bleu nuit */
     --text-primary: #fafafa;    /* Blanc cassé (le max de luminosité conseillé) */
     --text-secondary: #727272;
     --text-third: #5c6bc0;  /* Gris-Bleu industriel (change du gris triste) */
@@ -381,6 +381,8 @@ h4{
    ======================================== */
 
 .project-card {
+    text-decoration: none;
+    color: inherit;
     background: transparent;
     border: none;
     border-left: 4px solid transparent; 
@@ -405,6 +407,11 @@ h4{
     margin-bottom: 0.5rem;
     font-size: 1.3rem;
     font-weight: 700;
+    transition: color 0.2s ease;
+}
+
+.project-card:hover h4 {
+    color: var(--accent);
 }
 
 .tags {
